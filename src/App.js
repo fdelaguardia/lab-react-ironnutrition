@@ -1,23 +1,45 @@
-import logo from './logo.svg';
+//App.js
+import { Row, Divider, Input } from "antd";
 import './App.css';
+import foodsData from './foods.json'
+import { useState } from "react";
+import FoodBox from "./components/FoodBox";
+import AddFoodForm from "./components/AddFoodForm";
+import Search from "./components/Search";
 
 function App() {
+
+  const [foods, setFoods] = useState(foodsData)
+
+  const [query, setQuery] = useState("")
+
+  const filteredFoods = foods.filter(food => {
+    if (query === "") {
+      return true; 
+    } else {
+      return food.name.toLowerCase().includes(query.toLowerCase());
+    }
+  });
+
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+
+        <AddFoodForm foods={foods} setFoods={setFoods}/>
+        <br/>
+        <br/>
+        <Search query={query} setQuery={setQuery} />
+        <br/>
+        <br/>
+        <Divider>Food List</Divider>
+        <Row style={{ width: '100%', justifyContent: 'center' }}>
+        {filteredFoods.map((food) => {
+          return (
+            <FoodBox  foods={foods} setFoods={setFoods} name={food.name} image={food.image} calories={food.calories} servings={food.servings}/>
+          )
+        })}
+        </Row>
+       
+
     </div>
   );
 }
